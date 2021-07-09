@@ -1,6 +1,9 @@
 // define variables 
 let today = moment()
-let currentCity = 'Sydney'
+let currentCity = "Sydney"
+if (localStorage.getItem("storedCurrentCity")){
+    currentCity = localStorage.getItem("storedCurrentCity")
+}
 let cityEl = $('#city');
 let todayEl = $('#date');
 let cardsEl = $('#cards-here');
@@ -9,14 +12,30 @@ let tempEl = $('#temp-today');
 let windEl = $('#wind-today');
 let humidEl = $('#humidity-today');
 let uvEl = $('#uv-today');
+let pastEl = $('#past-searches')
+let pulledCities = JSON.parse(localStorage.getItem("storedCities"))
 let cityArr = [];
+// if there is anything in local storage, update values in cityArr
+if (pulledCities !== null) {
+     cityArr = pulledCities;
+}
 
 function init (){
     todayEl.text(today.format("DD-MMM-YYYY"));
     buildBody();
+    buildList();
 }
 
-// pull from local storage OR use current city
+// builds past searches
+function buildList(){
+    for (i=0;i<cityArr.length;i++){
+    let cityList = $('<li>')
+    cityList.text(cityArr[i])
+    cityList.addClass('list-group-item')
+    pastEl.append(cityList)
+    }
+}
+
 
 // builds cards
 function buildCards(dataOc){
@@ -69,9 +88,16 @@ function buildBody(){
         return response.json();
     })
     .then(function (data){
-        // adds successful search into array for later storage if it is not already there
+        // adds successful search into a current city local storage, so it can be preloaded later 
+        localStorage.setItem("storedCurrentCity",data.name);
+        // adds successful search into array for later storage, plus to the city lists if it is not already there
         if(!cityArr.includes(data.name)){
             cityArr.push(data.name);
+            localStorage.setItem("storedCities",JSON.stringify(cityArr));
+            let cityList = $('<li>');
+            cityList.text(data.name);
+            cityList.addClass('list-group-item');
+            pastEl.append(cityList);
             }
         cityEl.text(data.name);
         iconEl.html('<img class="icon" src="https://openweathermap.org/img/wn/'+data.weather[0].icon+'@2x.png"></img>');
@@ -101,28 +127,25 @@ function buildBody(){
 
 // }
 
-
-
-
-
-$("#submit").on("click", function (event) {
-    event.preventDefault();
+function clearInfo(){
     cardsEl.empty();
     cityEl.text('');
     iconEl.html('');
     tempEl.text('');
     windEl.text('');
     humidEl.text('');
+}
+
+
+
+$("#submit").on("click", function (event) {
+    event.preventDefault();
+    clearInfo()
     console.log($('#input-city').val());
     currentCity = $('#input-city').val();
     buildBody();
     // index = $(this).parent().attr("index");
     // storedText = $(this).prev().val()
-  
-    // planTextArr[index] = storedText;
-  
-    // localStorage.setItem("storedPlans", JSON.stringify(planTextArr));
-  
   })
 
 init()
