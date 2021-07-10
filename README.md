@@ -17,5 +17,5 @@
 ## Link
 Here's a link to the [deployed page](http://rpgarde.github.io/weather-dashboard/) and a screenshot below. 
 
-![Screenshot](./develop/screenshot.png)
+![Screenshot](./develop/screenshot-syd.png)
 
