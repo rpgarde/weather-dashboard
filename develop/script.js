@@ -1,6 +1,7 @@
 // define variables 
 let today = moment()
 let currentCity = "Sydney"
+// if local storage has a stored city, use that instead of Sydney
 if (localStorage.getItem("storedCurrentCity")){
     currentCity = localStorage.getItem("storedCurrentCity")
 }
@@ -15,11 +16,12 @@ let uvEl = $('#uv-today');
 let pastEl = $('#past-searches')
 let pulledCities = JSON.parse(localStorage.getItem("storedCities"))
 let cityArr = [];
-// if there is anything in local storage, update values in cityArr
+// if there is anything in local storage, update values in cityArr to build the lefthand side
 if (pulledCities !== null) {
      cityArr = pulledCities;
 }
 
+// init builds the body (right hand side) and list 
 function init (){
     todayEl.text(today.format("DD-MMM-YYYY"));
     buildBody();
@@ -31,15 +33,15 @@ function buildList(){
     for (i=0;i<cityArr.length;i++){
     let cityList = $('<li>')
     cityList.text(cityArr[i])
-    cityList.addClass('list-group-item')
+    cityList.addClass('list-group-item list-group-item-action')
+    cityList.css("cursor","pointer")
     pastEl.append(cityList)
     }
 }
 
-
-// builds cards
+// builds cards for 5 day forecast
 function buildCards(dataOc){
-    // for loop to build card elemnts 5 times
+    // for loop to build card elemnts 5 times, we start with 1 and array[0] represents today
     for(i=1;i<6;i++){
         // create card bootstrap component
         let card = $('<div>')
@@ -117,16 +119,22 @@ function buildBody(){
         .then(function (dataOc){
             console.log(dataOc)
             uvEl.text(dataOc.daily[0].uvi)
+            //adds a different class depending on UV severity. 0-2.99 = green, 3-5.99 = yellow, 6+ = red
+            if(dataOc.daily[0].uvi>=6){
+                uvEl.addClass('badge bg-danger')
+            }
+            else if(dataOc.daily[0].uvi>=3){
+                uvEl.addClass('badge bg-warning')
+            }
+            else{
+                uvEl.addClass('badge bg-success')
+            }
             buildCards(dataOc)
         })
     })
 }
 
-// function that changes currentCity, clears buildCards function, and reruns it. 
-// function changeCity(){
-
-// }
-
+// clears info
 function clearInfo(){
     cardsEl.empty();
     cityEl.text('');
@@ -136,6 +144,14 @@ function clearInfo(){
     humidEl.text('');
 }
 
+// event delegation + event listener so that each of the past cities work
+pastEl.on("click",'.list-group-item', function (event) {
+    console.log("you clicked the LI")
+    let btnClicked = $(event.target)
+    clearInfo();
+    currentCity = btnClicked.text();
+    buildBody();
+  })
 
 
 $("#submit").on("click", function (event) {
@@ -144,9 +160,6 @@ $("#submit").on("click", function (event) {
     console.log($('#input-city').val());
     currentCity = $('#input-city').val();
     buildBody();
-    // index = $(this).parent().attr("index");
-    // storedText = $(this).prev().val()
   })
 
 init()
-

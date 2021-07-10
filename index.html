@@ -13,8 +13,8 @@
         </div>
     <div class="container">
         <div class="row">
-            <div class="col-sm-2">
-                <form class="p-2">
+            <div class="col-md-2">
+                <form class="p-2 mt-3 text-center">
                     <div class="mb-3">
                       <label for="input-city" class="form-label fw-bold">Search a city</label>
                       <input type="text" class="form-control" id="input-city" name = "input-city" placeholder="Enter a city">
@@ -22,13 +22,14 @@
                     <button type="submit" class="btn btn-primary" id ="submit">Search</button>
                 </form>
                 <hr>
+                <div class="fw-bold mb-3 text-center">Past searches:</div>
                 <ul id = "past-searches" class = "list-group">
                     <!-- add past searches here -->
                 </ul>
             </div>
-            <div class="col-sm-10">
+            <div class="col-md-10">
                 <div class="row">
-                    <div class = "border m-3 p-2 bg-light">
+                    <div class = "border m-3 p-4 bg-light">
                         <div class="row">
                             <h1 class = "display-5 fw-bold"><span id = "city"></span>, <span id ="date"></span></h1>
                         </div>
@@ -44,7 +45,7 @@
                 <div class="row">
                     <div class = "border m-3 p-2 bg-light">
                         <div class="row">
-                            <h1 class = "display-5 fw-bold">5 Day Forecast</h1>
+                            <h1 class = "display-5 p-4 fw-bold">5 Day Forecast</h1>
                         </div>
                         <div class="row justify-content-evenly" id ="cards-here">
                             <!-- Add cards here -->                                           
