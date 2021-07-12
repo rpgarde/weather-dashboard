@@ -10,6 +10,7 @@
 
 ## Notes on how I approached this
 * This used HTML, JS (+JQuery and Moment libraries), CSS (via Bootstrap), and the OpenWeatherMap API
+* I exclusively used Bootstrap within HTML, that's why there is no CSS file. I did this to fully test my understanding of Bootstrap. 
 * The javascript file has comments on my thought process as I was building this
 * The UV index API had been deprecated, so I had to use the OneCall API by using the current city API's Lat/Lon coordinates
 * The only issue this has is it does not support multi-country cities (e.g. Melbourne exists in both USA and Australia)
