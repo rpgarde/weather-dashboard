@@ -90,10 +90,10 @@ function buildBody(){
         return response.json();
     })
     .then(function (data){
-        if(data.cod=404){
-            alert("No city found. Please try again.")
-        }
-        else {
+        console.log(data)
+            if(data.name){
+            // only clears info if data.name has a value
+            clearInfo()
             // adds successful search into a current city local storage, so it can be preloaded later 
             localStorage.setItem("storedCurrentCity",data.name);
             // adds successful search into array for later storage, plus to the city lists if it is not already there
@@ -135,8 +135,10 @@ function buildBody(){
                 }
                 buildCards(dataOc)
             })
-            return;
         }
+        else(
+            alert("No city found. Please try again.")
+        )
     })
 }
 
@@ -163,7 +165,6 @@ pastEl.on("click",'.list-group-item', function (event) {
 $("#submit").on("click", function (event) {
     event.preventDefault();
     if($('#input-city').val()){
-        clearInfo()
         console.log($('#input-city').val());
         currentCity = $('#input-city').val();
         buildBody();
