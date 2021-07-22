@@ -90,47 +90,53 @@ function buildBody(){
         return response.json();
     })
     .then(function (data){
-        // adds successful search into a current city local storage, so it can be preloaded later 
-        localStorage.setItem("storedCurrentCity",data.name);
-        // adds successful search into array for later storage, plus to the city lists if it is not already there
-        if(!cityArr.includes(data.name)){
-            cityArr.push(data.name);
-            localStorage.setItem("storedCities",JSON.stringify(cityArr));
-            let cityList = $('<li>');
-            cityList.text(data.name);
-            cityList.addClass('list-group-item');
-            pastEl.append(cityList);
-            }
-        cityEl.text(data.name);
-        iconEl.html('<img class="icon" src="https://openweathermap.org/img/wn/'+data.weather[0].icon+'@2x.png"></img>');
-        tempEl.text(data.main.temp+'°C');
-        windEl.text(data.wind.speed+' kph');
-        humidEl.text(data.main.humidity+'%');
-        // Get Lat/Long to use for onecall API - to get uv index + forecast
-        let cityLon = data.coord.lon
-        let cityLat = data.coord.lat 
-        let apiUrlOc = 'https://api.openweathermap.org/data/2.5/onecall?lat='+cityLat+'&lon='+cityLon+'&exclude=minutely,hourly,alerts&units=metric&appid=a2d6cfed0daac40477a3d34da9061d66'
+        if(data.cod=404){
+            alert("No city found. Please try again.")
+        }
+        else {
+            // adds successful search into a current city local storage, so it can be preloaded later 
+            localStorage.setItem("storedCurrentCity",data.name);
+            // adds successful search into array for later storage, plus to the city lists if it is not already there
+            if(!cityArr.includes(data.name)){
+                cityArr.push(data.name);
+                localStorage.setItem("storedCities",JSON.stringify(cityArr));
+                let cityList = $('<li>');
+                cityList.text(data.name);
+                cityList.addClass('list-group-item');
+                pastEl.append(cityList);
+                }
+            cityEl.text(data.name);
+            iconEl.html('<img class="icon" src="https://openweathermap.org/img/wn/'+data.weather[0].icon+'@2x.png"></img>');
+            tempEl.text(data.main.temp+'°C');
+            windEl.text(data.wind.speed+' kph');
+            humidEl.text(data.main.humidity+'%');
+            // Get Lat/Long to use for onecall API - to get uv index + forecast
+            let cityLon = data.coord.lon
+            let cityLat = data.coord.lat 
+            let apiUrlOc = 'https://api.openweathermap.org/data/2.5/onecall?lat='+cityLat+'&lon='+cityLon+'&exclude=minutely,hourly,alerts&units=metric&appid=a2d6cfed0daac40477a3d34da9061d66'
 
-        fetch(apiUrlOc)
-        .then(function (response){
-            console.log(response)
-            return response.json();
-        })
-        .then(function (dataOc){
-            console.log(dataOc)
-            uvEl.text(dataOc.daily[0].uvi)
-            //adds a different class depending on UV severity. 0-2.99 = green, 3-5.99 = yellow, 6+ = red
-            if(dataOc.daily[0].uvi>=6){
-                uvEl.addClass('badge bg-danger')
-            }
-            else if(dataOc.daily[0].uvi>=3){
-                uvEl.addClass('badge bg-warning')
-            }
-            else{
-                uvEl.addClass('badge bg-success')
-            }
-            buildCards(dataOc)
-        })
+            fetch(apiUrlOc)
+            .then(function (response){
+                console.log(response)
+                return response.json();
+            })
+            .then(function (dataOc){
+                console.log(dataOc)
+                uvEl.text(dataOc.daily[0].uvi)
+                //adds a different class depending on UV severity. 0-2.99 = green, 3-5.99 = yellow, 6+ = red
+                if(dataOc.daily[0].uvi>=6){
+                    uvEl.addClass('badge bg-danger')
+                }
+                else if(dataOc.daily[0].uvi>=3){
+                    uvEl.addClass('badge bg-warning')
+                }
+                else{
+                    uvEl.addClass('badge bg-success')
+                }
+                buildCards(dataOc)
+            })
+            return;
+        }
     })
 }
 
@@ -156,10 +162,16 @@ pastEl.on("click",'.list-group-item', function (event) {
 
 $("#submit").on("click", function (event) {
     event.preventDefault();
-    clearInfo()
-    console.log($('#input-city').val());
-    currentCity = $('#input-city').val();
-    buildBody();
+    if($('#input-city').val()){
+        clearInfo()
+        console.log($('#input-city').val());
+        currentCity = $('#input-city').val();
+        buildBody();
+    }
+    else{
+        console.log("It didn't work")
+        alert('You did not add a city. Please try again.')
+    }
   })
 
 init()
