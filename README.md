@@ -18,5 +18,10 @@
 ## Link
 Here's a link to the [deployed page](http://rpgarde.github.io/weather-dashboard/) and a screenshot below. 
 
+## Screenshots
 ![Screenshot](./develop/screenshot-syd.png)
+
+Error message if it can't find the location
+![Error](./develop/error-msg.png)
+
 
